@@ -4,11 +4,14 @@ on: push
 
 jobs:
   runAllTestsOnUnity2019:
-    name: Run All Tests
+    name: Run tests for version ${{ matrix.unityVersion }} 
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
+      fail-fast: false
       matrix:
+        projectPath:
+          - test-project
         testMode: [ playmode, editmode ]
         unityVersion: 
           - 2019.4.38f1
@@ -16,12 +19,15 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          lfs: true
       - name: Cache Project
         uses: actions/cache@v2
         with:
-          path:  ${{ matrix.unityVersion }}/Library
-          key: Library-${{ matrix.unityVersion }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          path: ${{ matrix.projectPath }}/Library
+          key: Library-${{ matrix.projectPath }}
           restore-keys: |
+            Library-${{ matrix.projectPath }}
             Library-
       - name: Run Tests
         uses: game-ci/unity-test-runner@v2
