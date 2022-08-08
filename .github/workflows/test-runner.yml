@@ -4,7 +4,7 @@ on: push
 
 jobs:
   runAllTestsOnUnity2019:
-    name: Run ${{ matrix.testMode }} tests for version ${{ matrix.unityVersion }} 
+    name: ${{ matrix.unityVersion }} ${{ matrix.testMode }} tests 
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -33,6 +33,6 @@ jobs:
           unityVersion: ${{ matrix.unityVersion }}
           testMode: ${{ matrix.testMode }}
           projectPath: ${{ matrix.projectPath }}
-          checkName: ${{ matrix.testMode }} test Results for version ${{ matrix.unityVersion }}
+          checkName: ${{ matrix.unityVersion }} ${{ matrix.testMode }} tests result
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           coverageOptions: "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+my.assembly.*"
