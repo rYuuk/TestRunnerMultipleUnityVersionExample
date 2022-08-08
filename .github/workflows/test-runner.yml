@@ -10,6 +10,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        testMode: 
+          - playmode
         unityVersion:
           - 2019.4.38f1
           - 2020.3.37f1
@@ -21,13 +23,16 @@ jobs:
           key: Library-
           restore-keys: |
             Library-
-      - uses: game-ci/unity-builder@v2
+      - uses: game-ci/unity-test-runner@v2
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           unityVersion: ${{ matrix.unityVersion }}
-          targetPlatform: ${{ matrix.targetPlatform }}
-          customParameters: -profile SomeProfile -someBoolean -someValue exampleValue
+          testMode: ${{ matrix.testMode }}
+          projectPath: ${{ matrix.projectPath }}
+          checkName: ${{ matrix.testMode }} Test Results
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          coverageOptions: "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+my.assembly.*"
 #  runAllTests:
 #    name: Run tests for version ${{ matrix.unityVersion }}
 #    runs-on: ubuntu-latest
