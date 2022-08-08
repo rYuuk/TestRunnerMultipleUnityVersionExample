@@ -10,10 +10,10 @@ jobs:
     strategy:
       matrix:
         testMode: [ playmode, editmode ]
+        unityVersion: [2019.4.38f1]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-
       - name: Cache Project
         uses: actions/cache@v2
         with:
