@@ -4,7 +4,7 @@ on: push
 
 jobs:
   runAllTestsOnUnity2019:
-    name: Run tests for version ${{ matrix.unityVersion }} 
+    name: Run ${{ matrix.testMode }} tests for version ${{ matrix.unityVersion }} 
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -16,8 +16,8 @@ jobs:
         unityVersion:
           - 2019.4.38f1
           - 2020.3.37f1
-#          - 2021.3.7f1
-#          - 2022.1.12f1
+          - 2021.3.7f1
+          - 2022.1.12f1
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v2
@@ -33,44 +33,6 @@ jobs:
           unityVersion: ${{ matrix.unityVersion }}
           testMode: ${{ matrix.testMode }}
           projectPath: ${{ matrix.projectPath }}
-          checkName: ${{ matrix.testMode }} Test Results
+          checkName: ${{ matrix.testMode }} test Results for version ${{ matrix.unityVersion }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           coverageOptions: "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+my.assembly.*"
-#  runAllTests:
-#    name: Run tests for version ${{ matrix.unityVersion }}
-#    runs-on: ubuntu-latest
-#    timeout-minutes: 15
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        projectPath:
-#          - test-project
-#        testMode: [ playmode, editmode ]
-#        unityVersion:
-#          - 2019.4.38f1
-#          - 2020.3.37f1
-#    steps:
-#      - name: Checkout Repository
-#        uses: actions/checkout@v3
-#        with:
-#          lfs: true
-#      - name: Cache Project
-#        uses: actions/cache@v2
-#        with:
-#          path: ${{ matrix.projectPath }}/Library
-#          key: Library-${{ matrix.projectPath }}
-#          restore-keys: |
-#            Library-${{ matrix.projectPath }}
-#            Library-
-#      - name: Run Tests
-#        uses: game-ci/unity-test-runner@v2
-#        env:
-#          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-#        with:
-#          unityVersion: ${{ matrix.unityVersion }}
-#          testMode: ${{ matrix.testMode }}
-#          projectPath: ${{ matrix.projectPath }}
-#          checkName: ${{ matrix.testMode }} Test Results
-#          githubToken: ${{ secrets.GITHUB_TOKEN }}
-#          coverageOptions: "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+my.assembly.*"
-#
