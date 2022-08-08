@@ -12,35 +12,6 @@ jobs:
         testMode: [ playmode, editmode ]
         unityVersion: 
           - 2019.4.38f1
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-      - name: Cache Project
-        uses: actions/cache@v2
-        with:
-          path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-          restore-keys: |
-            Library-
-      - name: Run Tests
-        uses: game-ci/unity-test-runner@v2
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        with:
-          unityVersion: 2019.4.38f1
-          testMode: ${{ matrix.testMode }}
-          projectPath: ${{ matrix.projectPath }}
-          checkName: ${{ matrix.testMode }} Test Results
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          coverageOptions: "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+my.assembly.*"
-  runAllTestsOnUnity2020:
-    name: Run All Tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    strategy:
-      matrix:
-        testMode: [ playmode, editmode ]
-        unityVersion:
           - 2020.3.37f1
     steps:
       - name: Checkout Repository
@@ -57,10 +28,9 @@ jobs:
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          unityVersion: 2019.4.38f1
+          unityVersion: ${{ matrix.unityVersion }}
           testMode: ${{ matrix.testMode }}
           projectPath: ${{ matrix.projectPath }}
           checkName: ${{ matrix.testMode }} Test Results
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           coverageOptions: "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+my.assembly.*"
-
