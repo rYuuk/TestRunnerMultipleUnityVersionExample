@@ -1,0 +1,36 @@
+﻿name: Multiple Unity Test Example
+
+on: push
+
+jobs:
+  runAllTests:
+    name: Run All Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        testMode: [ playmode, editmode ]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Cache Project
+        uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+      - name: Run Tests
+        uses: game-ci/unity-test-runner@v2
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          unityVersion: 2019.4.38f1
+          testMode: ${{ matrix.testMode }}
+          projectPath: ${{ matrix.projectPath }}
+          checkName: ${{ matrix.testMode }} Test Results
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          coverageOptions: "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+my.assembly.*"
