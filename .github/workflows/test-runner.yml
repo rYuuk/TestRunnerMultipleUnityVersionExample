@@ -35,4 +35,10 @@ jobs:
           projectPath: ${{ matrix.projectPath }}
           checkName: ${{ matrix.unityVersion }} ${{ matrix.testMode }} tests result
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          coverageOptions: "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+my.assembly.*"
+          coverageOptions: "-nographics -debugCodeOptimization -enableCodeCoverage -coverageOptions enableCyclomaticComplexity;generateBadgeReport;assemblyFilters:+DIFramework -coverageResultsPath ./CodeCoverage"
+      - name: Code Coverage ☂️
+        uses: codecov/codecov-action@v2
+        with:
+          name: ${{ matrix.testMode }}
+          flags: automated
+          files: coverage-results/**/*.xml
