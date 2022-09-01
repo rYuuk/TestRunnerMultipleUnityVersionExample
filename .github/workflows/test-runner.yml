@@ -11,22 +11,26 @@ jobs:
       fail-fast: false
       matrix:
         testMode: 
-          - playmode
+#          - playmode
           - editmode
         unityVersion:
           - 2019.4.38f1
-          - 2020.3.37f1
-          - 2021.3.7f1
-          - 2022.1.12f1
+#          - 2020.3.37f1
+#          - 2021.3.7f1
+#          - 2022.1.12f1
     steps:
       - uses: actions/checkout@v3
+        with:
+          lfs: true
       - uses: actions/cache@v3
         with:
           path: Library
           key: Library-
           restore-keys: |
             Library-
-      - uses: game-ci/unity-test-runner@v2
+      - name: Tests 🛠️
+        id: tests
+        uses: game-ci/unity-test-runner@v2
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
@@ -35,10 +39,18 @@ jobs:
           projectPath: ${{ matrix.projectPath }}
           checkName: ${{ matrix.unityVersion }} ${{ matrix.testMode }} tests result
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          coverageOptions: "-nographics -debugCodeOptimization -enableCodeCoverage -coverageOptions enableCyclomaticComplexity;generateBadgeReport;assemblyFilters:+DIFramework -coverageResultsPath ./CodeCoverage"
-      - name: Code Coverage ☂️
+          customParameters: -debugCodeOptimization -enableCodeCoverage -coverageResultsPath ./CodeCoverage -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+API"
+      - run: echo ${{ steps.tests.outputs.coveragePath }}
+      - run: ls -al
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Coverage results for ${{ matrix.testMode }}
+          path: ${{ steps.tests.outputs.coveragePath }}
+      - name: Upload XML report to Codecov
         uses: codecov/codecov-action@v2
         with:
-          name: ${{ matrix.testMode }}
+          name:  EditMode
           flags: automated
-          files: coverage-results/**/*.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./CodeCoverage/workspace-opencov/EditMode/TestCoverageResults_0000.xml
