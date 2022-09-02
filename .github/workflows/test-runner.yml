@@ -39,7 +39,7 @@ jobs:
           projectPath: ${{ matrix.projectPath }}
           checkName: ${{ matrix.unityVersion }} ${{ matrix.testMode }} tests result
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          customParameters: -debugCodeOptimization -enableCodeCoverage -coverageResultsPath ./CodeCoverage -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+API"
+          customParameters: -debugCodeOptimization -enableCodeCoverage -coverageResultsPath ./CodeCoverage -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport"
       - run: echo ${{ steps.tests.outputs.coveragePath }}
       - run: ls -al
       - uses: actions/upload-artifact@v2
