@@ -39,7 +39,7 @@ jobs:
           projectPath: ${{ matrix.projectPath }}
           checkName: ${{ matrix.unityVersion }} ${{ matrix.testMode }} tests result
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          customParameters: -debugCodeOptimization -enableCodeCoverage -coverageResultsPath ./CodeCoverage -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport"
+          customParameters: -debugCodeOptimization -enableCodeCoverage -coverageResultsPath ./CodeCoverage -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+API"
       - run: echo ${{ steps.tests.outputs.coveragePath }}
       - run: ls -al
       - uses: actions/upload-artifact@v2
@@ -53,4 +53,5 @@ jobs:
           name:  EditMode
           flags: automated
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./CodeCoverage/workspace-opencov/EditMode/TestCoverageResults_0000.xml
+          files: ./CodeCoverage/workspace-opencov/EditMode/TestCoverageResults_0000.xml,./CodeCoverage/workspace-opencov/EditMode/TestCoverageResults_0001.xml
+          fail_ci_if_error: true
