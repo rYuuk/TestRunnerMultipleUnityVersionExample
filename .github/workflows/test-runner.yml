@@ -3,7 +3,7 @@
 on: push
 
 jobs:
-  runAllTestsOnUnity2019:
+  runAllTests:
     name: ${{ matrix.unityVersion }} ${{ matrix.testMode }} tests 
     runs-on: ubuntu-latest
     timeout-minutes: 15

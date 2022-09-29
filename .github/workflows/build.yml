@@ -1,0 +1,44 @@
+name: Build Project
+
+on:
+  workflow_dispatch:
+    inputs:
+      targetPlatform:
+        description: 'Platforms - StandaloneOSX, StandaloneWindows64, iOS, Android, WebGL'
+        required: true
+        default: 'Android'
+
+jobs:
+  buildProjects:
+    name: Build ${{ matrix.targetPlatform }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        targetPlatform: 
+          - ${{ github.event.inputs.targetPlatform }}
+        unityVersion:
+          - 2019.4.38f1
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Cache Project
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+
+      - name: Build App
+        uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: ${{ matrix.targetPlatform }}
+
+      - name: Upload App
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.targetPlatform }}
+          path: build/${{ matrix.targetPlatform }}
